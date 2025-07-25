@@ -1,34 +1,44 @@
 import React from 'react';
 import Profile from '../screens/Profile';
-import {
-  createStaticNavigation,
-} from '@react-navigation/native';
+import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
-import Home from '../screens/Home';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MyTabBar } from '../components/TabBar';
+import Movies from '../screens/Movies';
+import TvShows from '../screens/TvShows';
+import ProfileSeeAll from '../screens/ProfileSeeAll';
+import ProfileList from '../screens/ProfileList';
 
-export default function Routes(){
+export default function Routes() {
   const AppTabs = createBottomTabNavigator({
-    initialRouteName: 'Home',
-    screens: {
-      Home: Home,
-      Profile: Profile
+    initialRouteName: 'Movies',
+    screenOptions: {
+      headerShown: false,
     },
-    id: undefined
+    // eslint-disable-next-line react/no-unstable-nested-components
+    tabBar: props => <MyTabBar {...props} />,
+
+    screens: {
+      TvShows: TvShows,
+      Movies: Movies,
+      Profile: Profile,
+    },
   });
 
   const RootStack = createNativeStackNavigator({
     initialRouteName: 'Login',
     screenOptions: {
-      headerShown: false
+      headerShown: false,
     },
     screens: {
       Login: Login,
       AppTab: AppTabs,
+      ProfileSeeAll: ProfileSeeAll,
+      ProfileList: ProfileList,
     },
   });
 
-const Navigation = createStaticNavigation(RootStack);
-    return <Navigation />
+  const Navigation = createStaticNavigation(RootStack);
+  return <Navigation />;
 }

@@ -1,7 +1,7 @@
-import React from "react";
-import { TextInput, TextInputProps, View } from "react-native";
-import styles from "./styles";
-import Icon from '@react-native-vector-icons/evil-icons'
+import React from 'react';
+import { TextInput, TextInputProps, View } from 'react-native';
+import styles from './styles';
+import Icon from '@react-native-vector-icons/evil-icons';
 
 export default function Input({
   placeholder,
@@ -19,10 +19,10 @@ export default function Input({
 } & TextInputProps) {
   return (
     <View style={styles.container}>
-      <Icon name={iconName} size={24} color={color} style={{ bottom: 2 }} />
+      <Icon name={iconName} size={24} color={color} style={styles.icon} />
       <TextInput
         placeholder={placeholder}
-        placeholderTextColor={"#FFFFFF80"}
+        placeholderTextColor={'#FFFFFF80'}
         style={styles.input}
         onChangeText={onChangeText}
         value={value}

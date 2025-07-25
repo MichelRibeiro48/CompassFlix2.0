@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { requestLogger, responseLogger } from 'axios-logger';
-
+// import { requestLogger, responseLogger } from 'axios-logger';
 
 export const api = axios.create({
   baseURL: 'https://api.themoviedb.org/3',
@@ -9,5 +8,5 @@ export const api = axios.create({
   },
 });
 
-api.interceptors.request.use(requestLogger);
-api.interceptors.response.use(responseLogger);
+// api.interceptors.request.use(requestLogger);
+// api.interceptors.response.use(responseLogger);
