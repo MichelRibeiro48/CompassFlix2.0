@@ -113,7 +113,9 @@ export default function Profile() {
         <Image
           source={
             dataProfile?.avatar?.tmdb.avatar_path
-              ? { uri: dataProfile?.avatar?.tmdb.avatar_path }
+              ? {
+                  uri: `https://image.tmdb.org/t/p/w500/${dataProfile?.avatar?.tmdb.avatar_path}`,
+                }
               : require('../../images/avatar.png')
           }
           style={styles.userAvatar}
