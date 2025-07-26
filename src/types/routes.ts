@@ -6,4 +6,6 @@ export type RootStackParamList = {
   ProfileList: {
     typeMode: 'movies' | 'series';
   };
+  Details: { id: number; type: 'movies' | 'series' };
+  ListDetails: { list_id: number };
 };

@@ -1,4 +1,11 @@
-import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
 import { getDetailsProfile } from '../../service/profile';
 import {
   keepPreviousData,
@@ -10,11 +17,18 @@ import { useEffect, useState } from 'react';
 import styles from './styles';
 import { getPopularSeries } from '../../service/series';
 import { ResultSeries } from '../../types/seriesDTO';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../types/routes';
 
+type ProfileScreenNavigationProp = NavigationProp<
+  RootStackParamList,
+  'ProfileSeeAll'
+>;
 export default function TvShows() {
   const [seriesList, setSeriesList] = useState<ResultSeries[]>([]);
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { data: dataProfile, isLoading: loadingProfile } = useQuery({
     queryKey: ['details-profile'],
     queryFn: getDetailsProfile,
@@ -84,7 +98,12 @@ export default function TvShows() {
         numColumns={3}
         onEndReached={() => setPage(page + 1)}
         renderItem={({ item }) => (
-          <View style={styles.listContainer}>
+          <Pressable
+            style={styles.listContainer}
+            onPress={() =>
+              navigation.navigate('Details', { id: item.id, type: 'series' })
+            }
+          >
             <Image
               source={{
                 uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
@@ -98,7 +117,7 @@ export default function TvShows() {
                 {item?.vote_average?.toFixed(1)}/10.0
               </Text>
             </View>
-          </View>
+          </Pressable>
         )}
       />
     </View>

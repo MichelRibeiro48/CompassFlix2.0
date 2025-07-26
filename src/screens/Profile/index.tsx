@@ -192,14 +192,19 @@ export default function Profile() {
         horizontal
         contentContainerStyle={styles.listContainerView}
         renderItem={({ item }) => (
-          <View style={styles.listContainer}>
+          <Pressable
+            style={styles.listContainer}
+            onPress={() =>
+              navigation.navigate('Details', { id: item.id, type: viewMode })
+            }
+          >
             <Image
               source={{
                 uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
               }}
               style={styles.listImage}
             />
-          </View>
+          </Pressable>
         )}
       />
       <View style={styles.lineSeparator} />
@@ -230,7 +235,12 @@ export default function Profile() {
         horizontal
         contentContainerStyle={styles.listContainerView}
         renderItem={({ item }) => (
-          <View style={styles.listContainer}>
+          <Pressable
+            style={styles.listContainer}
+            onPress={() =>
+              navigation.navigate('Details', { id: item.id, type: viewMode })
+            }
+          >
             <Image
               source={{
                 uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
@@ -244,7 +254,7 @@ export default function Profile() {
                 {item?.rating?.toFixed(1)}/10.0
               </Text>
             </View>
-          </View>
+          </Pressable>
         )}
       />
     </View>

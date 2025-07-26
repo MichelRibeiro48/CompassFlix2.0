@@ -15,14 +15,19 @@ import {
 } from '../../service/profile';
 import { useQuery } from '@tanstack/react-query';
 import Icon from '@react-native-vector-icons/fontawesome6';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import IconA from 'react-native-vector-icons/EvilIcons';
 import { GetMoviesDTO } from '../../types/userDTO';
 import styles from './styles';
+import { RootStackParamList } from '../../types/routes';
 
+type ProfileScreenNavigationProp = NavigationProp<
+  RootStackParamList,
+  'ProfileSeeAll'
+>;
 export default function ProfileSeeAll({ route }: any) {
   const params = route.params;
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
 
   console.log('teste', params);
   const { data: dataProfile, isLoading: loadingProfile } = useQuery({
@@ -120,7 +125,15 @@ export default function ProfileSeeAll({ route }: any) {
         data={actualData() && actualData()?.results}
         numColumns={3}
         renderItem={({ item }) => (
-          <View style={styles.listContainer}>
+          <Pressable
+            style={styles.listContainer}
+            onPress={() =>
+              navigation.navigate('Details', {
+                id: item.id,
+                type: params.typeMode,
+              })
+            }
+          >
             <Image
               source={{
                 uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
@@ -138,7 +151,7 @@ export default function ProfileSeeAll({ route }: any) {
                 </>
               )}
             </View>
-          </View>
+          </Pressable>
         )}
       />
     </View>

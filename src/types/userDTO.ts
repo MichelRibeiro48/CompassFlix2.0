@@ -72,3 +72,21 @@ export interface Result {
   vote_count: number;
   rating: number;
 }
+
+export interface UserMediaList {
+  page: number;
+  results: MediaListResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface MediaListResult {
+  description: string;
+  favorite_count: number;
+  id: number;
+  iso_639_1: string;
+  item_count: number;
+  list_type: string;
+  name: string;
+  poster_path?: string;
+}

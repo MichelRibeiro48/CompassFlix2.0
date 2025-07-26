@@ -9,6 +9,8 @@ import Movies from '../screens/Movies';
 import TvShows from '../screens/TvShows';
 import ProfileSeeAll from '../screens/ProfileSeeAll';
 import ProfileList from '../screens/ProfileList';
+import Details from '../screens/Details';
+import ListDetails from '../screens/ListDetails';
 
 export default function Routes() {
   const AppTabs = createBottomTabNavigator({
@@ -36,6 +38,8 @@ export default function Routes() {
       AppTab: AppTabs,
       ProfileSeeAll: ProfileSeeAll,
       ProfileList: ProfileList,
+      Details: Details,
+      ListDetails: ListDetails,
     },
   });
 
