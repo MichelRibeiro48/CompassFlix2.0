@@ -38,25 +38,20 @@ export default function Profile() {
   const {
     data: dataProfileFavoriteMovies,
     isLoading: loadingProfileFavoriteMovies,
-    refetch: refetchFavoriteMovies,
   } = useQuery({
     queryKey: ['details-profile-favorite-movies'],
     queryFn: getFavoritedMovies,
   });
 
-  const {
-    data: dataProfileRatedMovies,
-    isLoading: loadingProfileRatedMovies,
-    refetch: refetchRatedMovies,
-  } = useQuery({
-    queryKey: ['details-profile-rated-movies'],
-    queryFn: getRatedMovies,
-  });
+  const { data: dataProfileRatedMovies, isLoading: loadingProfileRatedMovies } =
+    useQuery({
+      queryKey: ['details-profile-rated-movies'],
+      queryFn: getRatedMovies,
+    });
 
   const {
     data: dataProfileFavoriteTvShows,
     isLoading: loadingProfileFavoriteTvShows,
-    refetch: refetchFavoriteTvShows,
   } = useQuery({
     queryKey: ['details-profile-favorite-TvShows'],
     queryFn: getFavoritedTvShows,
@@ -65,7 +60,6 @@ export default function Profile() {
   const {
     data: dataProfileRatedTvShows,
     isLoading: loadingProfileRatedTvShows,
-    refetch: refetchRatedTvShows,
   } = useQuery({
     queryKey: ['details-profile-rated-TvShows'],
     queryFn: getRatedTvShows,
@@ -79,12 +73,6 @@ export default function Profile() {
     });
   };
 
-  const updateList = () => {
-    refetchFavoriteMovies();
-    refetchRatedMovies();
-    refetchFavoriteTvShows();
-    refetchRatedTvShows();
-  };
   if (
     loadingProfile ||
     loadingProfileFavoriteMovies ||
@@ -103,9 +91,6 @@ export default function Profile() {
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <View style={styles.headerButtonContainer}>
-          <Pressable style={styles.headerButton} onPress={() => updateList()}>
-            <Text style={styles.refreshListText}>Atualizar lista</Text>
-          </Pressable>
           <Pressable style={styles.headerButton} onPress={() => handleLogout()}>
             <Text style={styles.headerButtonText}>Sair</Text>
           </Pressable>
@@ -246,6 +231,7 @@ export default function Profile() {
                 uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
               }}
               style={styles.listImage}
+              resizeMode="contain"
             />
             <View style={styles.seriesRatingContainer}>
               <IconA name={'star'} color={'#EC2626'} size={24} />

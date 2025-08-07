@@ -10,8 +10,7 @@ export default StyleSheet.create({
   },
   buttonContainer: { paddingHorizontal: 48, paddingTop: 48 },
   headerButtonContainer: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
   headerButton: {
     backgroundColor: '#E9A6A6',
@@ -81,7 +80,11 @@ export default StyleSheet.create({
     color: '#E9A6A6',
   },
   listContainer: { margin: 8 },
-  listImage: { width: 100, height: 140, borderRadius: 8 },
+  listImage: {
+    width: 100,
+    height: 120,
+    borderRadius: 8,
+  },
   listContainerView: {
     paddingHorizontal: 16,
     height: '80%',
@@ -90,7 +93,6 @@ export default StyleSheet.create({
     width: '100%',
     backgroundColor: '#FFFFFF30',
     height: 1,
-    bottom: 10,
   },
   seriesContainer: {
     paddingHorizontal: 24,

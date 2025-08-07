@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { Text } from '@react-navigation/elements';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -64,15 +65,17 @@ export default function Details({ route }: any) {
     queryFn: getMediaList,
   });
 
-  const { refetch: refetchRatedTvShows } = useQuery({
-    queryKey: ['details-profile-rated-TvShows'],
-    queryFn: getRatedTvShows,
-  });
+  const { refetch: refetchRatedTvShows, isLoading: isLoadingRatedTvShows } =
+    useQuery({
+      queryKey: ['details-profile-rated-TvShows'],
+      queryFn: getRatedTvShows,
+    });
 
-  const { refetch: refetchRatedMovies } = useQuery({
-    queryKey: ['details-profile-rated-movies'],
-    queryFn: getRatedMovies,
-  });
+  const { refetch: refetchRatedMovies, isLoading: isLoadingRatedMovies } =
+    useQuery({
+      queryKey: ['details-profile-rated-movies'],
+      queryFn: getRatedMovies,
+    });
 
   const { data: dataProfile, isLoading: loadingProfile } = useQuery({
     queryKey: ['details-profile'],
@@ -126,8 +129,6 @@ export default function Details({ route }: any) {
     enabled: params.type === 'series',
   });
 
-  console.log('teste', dataDetailsSeasonsTvShow);
-
   const {
     data: dataAccountStateMovie,
     isLoading: loadingDataAccountStateMovie,
@@ -174,21 +175,19 @@ export default function Details({ route }: any) {
       console.log('Erro ao favoritar', error);
     },
   });
+  const [isRatingUpdating, setIsRatingUpdating] = useState(false);
 
-  const { mutate: sendRatingMovie, isPending: isLoadingRatingMovie } =
-    useMutation({
-      mutationFn: (ratingParams: {
-        movie_id: number;
-        body: { value: number };
-      }) => postRateMovie(ratingParams.movie_id, ratingParams.body),
-
-      onSuccess: async () => {
-        setTimeout(() => {
-          refetchAccountStateMovie();
-          refetchRatedMovies();
-        }, 1000);
-      },
-    });
+  const { mutate: sendRatingMovie } = useMutation({
+    mutationFn: (ratingParams: { movie_id: number; body: { value: number } }) =>
+      postRateMovie(ratingParams.movie_id, ratingParams.body),
+    onMutate: () => setIsRatingUpdating(true),
+    onSuccess: async () => {
+      await refetchAccountStateMovie();
+      await refetchRatedMovies();
+      setIsRatingUpdating(false);
+    },
+    onError: () => setIsRatingUpdating(false),
+  });
 
   const { mutate: sendRatingSerie, isPending: isLoadingRatingSerie } =
     useMutation({
@@ -202,6 +201,10 @@ export default function Details({ route }: any) {
           refetchAccountStateSerie();
           refetchRatedTvShows();
         }, 1000);
+      },
+
+      onError: error => {
+        console.log('Erro ao avaliar', error);
       },
     });
 
@@ -255,11 +258,12 @@ export default function Details({ route }: any) {
     loadingDataAccountStateMovie ||
     loadingDataAccountStateSerie ||
     loadingProfile ||
-    isLoadingRatingMovie ||
     isLoadingRatingSerie ||
     loadingDataCreditsSerie ||
     isLoadingMediaInList ||
     loadingProfileMediaList ||
+    isLoadingRatedTvShows ||
+    isLoadingRatedMovies ||
     loadingDataDetailsSeasonsTvShow
   ) {
     return (
@@ -269,11 +273,7 @@ export default function Details({ route }: any) {
     );
   }
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      nestedScrollEnabled
-    >
+    <View style={styles.container}>
       <ModalRating
         isVisible={visibleModal}
         onClose={() => setVisibleModal(false)}
@@ -341,65 +341,70 @@ export default function Details({ route }: any) {
           color={'red'}
         />
       </Pressable>
-      <View style={styles.posterContainer}>
-        <Image
-          source={{
-            uri: `https://image.tmdb.org/t/p/w500/${dataMedia?.poster_path}`,
-          }}
-          style={styles.posterImage}
-        />
-        <Pressable
-          style={[
-            styles.buttonRating,
-            // eslint-disable-next-line react-native/no-inline-styles
-            { backgroundColor: rating ? '#8BE0EC' : '#E9A6A6' },
-          ]}
-          onPress={() => setVisibleModal(true)}
-        >
-          <Text style={styles.userRating}>
-            {rating ? `Sua nota: ${rating}/10` : 'AVALIE AGORA'}
-          </Text>
-        </Pressable>
-      </View>
-      <View style={styles.infoMediaContainer}>
-        <Text style={styles.infoMediaTitle}>
-          {params.type === 'movies'
-            ? (dataMedia as MovieDetailsDTO).original_title
-            : (dataMedia as SeriesDetailsDTO).original_name}
-        </Text>
-        <Text style={styles.infoMediaTime}>
-          {returnDateRelease()}{' '}
-          {params.type === 'movies'
-            ? `    ${(dataMedia as MovieDetailsDTO).runtime} min`
-            : `    ${
-                (dataMedia as SeriesDetailsDTO).episode_run_time[0] ?? 0
-              } min/ep`}
-        </Text>
-        <View style={styles.subInfoMediaContainer}>
-          <Text style={styles.subInfoDirectorText}>Direção por </Text>
-          <Text style={styles.subInfoDirectorName}>{Directing}</Text>
-        </View>
-        <View style={styles.ratingContainer}>
-          <Text style={styles.ratingText}>
-            {dataMedia?.vote_average?.toFixed(1)}/10
-          </Text>
-          <View style={styles.heartContainer}>
-            <Icon name="heart" size={20} iconStyle="solid" color={'red'} />
-            <Text style={styles.heartText}>{dataMedia?.vote_count}</Text>
-          </View>
-        </View>
-        <Pressable
-          style={styles.userListContainer}
-          onPress={() => setVisibleModalList(true)}
-        >
-          <Icon
-            name="plus"
-            size={16}
-            style={styles.userListIcon}
-            iconStyle="solid"
+      <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+        <View style={styles.posterContainer}>
+          <Image
+            source={{
+              uri: `https://image.tmdb.org/t/p/w500/${dataMedia?.poster_path}`,
+            }}
+            style={styles.posterImage}
           />
-          <Text style={styles.userListText}>Adicionar à uma lista</Text>
-        </Pressable>
+          <Pressable
+            style={[
+              styles.buttonRating,
+              { backgroundColor: rating ? '#8BE0EC' : '#E9A6A6' },
+            ]}
+            onPress={() => setVisibleModal(true)}
+          >
+            {isRatingUpdating ? (
+              <ActivityIndicator color="black" size="small" />
+            ) : (
+              <Text style={styles.userRating}>
+                {rating ? `Sua nota: ${rating}/10` : 'AVALIE AGORA'}
+              </Text>
+            )}
+          </Pressable>
+        </View>
+        <View style={styles.infoMediaContainer}>
+          <Text style={styles.infoMediaTitle}>
+            {params.type === 'movies'
+              ? (dataMedia as MovieDetailsDTO).original_title
+              : (dataMedia as SeriesDetailsDTO).original_name}
+          </Text>
+          <Text style={styles.infoMediaTime}>
+            {returnDateRelease()}{' '}
+            {params.type === 'movies'
+              ? `    ${(dataMedia as MovieDetailsDTO).runtime} min`
+              : `    ${
+                  (dataMedia as SeriesDetailsDTO).episode_run_time[0] ?? 0
+                } min/ep`}
+          </Text>
+          <View style={styles.subInfoMediaContainer}>
+            <Text style={styles.subInfoDirectorText}>Direção por </Text>
+            <Text style={styles.subInfoDirectorName}>{Directing}</Text>
+          </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.ratingText}>
+              {dataMedia?.vote_average?.toFixed(1)}/10
+            </Text>
+            <View style={styles.heartContainer}>
+              <Icon name="heart" size={20} iconStyle="solid" color={'red'} />
+              <Text style={styles.heartText}>{dataMedia?.vote_count}</Text>
+            </View>
+          </View>
+          <Pressable
+            style={styles.userListContainer}
+            onPress={() => setVisibleModalList(true)}
+          >
+            <Icon
+              name="plus"
+              size={16}
+              style={styles.userListIcon}
+              iconStyle="solid"
+            />
+            <Text style={styles.userListText}>Adicionar à uma lista</Text>
+          </Pressable>
+        </View>
       </View>
       <View style={styles.mediaOverviewContainer}>
         <Text style={styles.mediaOverviewText}>{dataMedia?.overview}</Text>
@@ -438,9 +443,11 @@ export default function Details({ route }: any) {
           </>
         )}
         {params.type === 'series' && (
-          <View style={styles.seriesSeasonContainer}>
-            {dataDetailsTvShow?.seasons &&
-            dataDetailsTvShow.seasons.length > 0 ? (
+          <ScrollView
+            style={{ maxHeight: 400, marginTop: 12 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {dataDetailsTvShow?.seasons?.length > 0 ? (
               dataDetailsTvShow.seasons.map((item, index) => (
                 <Season
                   {...item}
@@ -467,9 +474,9 @@ export default function Details({ route }: any) {
                 </Text>
               </View>
             )}
-          </View>
+          </ScrollView>
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }

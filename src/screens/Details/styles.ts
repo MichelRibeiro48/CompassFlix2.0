@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', paddingTop: 24 },
+  container: { flex: 1, backgroundColor: '#000' },
   containerLoading: {
     flex: 1,
     justifyContent: 'center',
@@ -9,7 +9,7 @@ export default StyleSheet.create({
     backgroundColor: '#000',
   },
   listImage: { width: '100%', height: 200 },
-  posterContainer: { position: 'absolute', top: 130, left: 25 },
+  posterContainer: { position: 'absolute', marginLeft: 4, bottom: 1 },
   posterImage: {
     width: 120,
     height: 200,
@@ -40,7 +40,7 @@ export default StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 12,
   },
-  infoMediaContainer: { left: '40%' },
+  infoMediaContainer: { marginLeft: '40%', marginTop: 12 },
   infoMediaTitle: {
     fontWeight: '700',
     fontSize: 20,

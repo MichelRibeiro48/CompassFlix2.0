@@ -14,6 +14,7 @@ export default StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'transparent',
+    color: '#fff',
   },
   icon: { bottom: 2 },
 });

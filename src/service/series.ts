@@ -30,7 +30,9 @@ export const getDetailsSeries = async (
   id: number,
 ): Promise<SeriesDetailsDTO | undefined> => {
   try {
-    const response = await api.get<SeriesDetailsDTO>(`/tv/${id}`);
+    const response = await api.get<SeriesDetailsDTO>(
+      `/tv/${id}?language=pt-BR`,
+    );
     return response.data;
   } catch (error) {
     console.log(error);

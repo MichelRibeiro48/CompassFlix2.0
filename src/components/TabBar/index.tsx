@@ -59,6 +59,7 @@ export function MyTabBar({ state, descriptors, navigation }: any) {
                   borderRadius: 100,
                 }
               }
+              key={index}
             >
               {route.name === 'Profile' && (
                 <Icon name="user" color={'#c9c9c9'} size={24} />
