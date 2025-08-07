@@ -1,4 +1,11 @@
-import { Image, Text, View, TouchableOpacity, Alert } from 'react-native';
+import {
+  Image,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './styles';
@@ -12,7 +19,7 @@ import {
   isValidSessionResponse,
   isValidTokenResponse,
 } from '../../helpers/isValidTokens';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getDetailsProfile } from '../../service/profile';
 
 export default function Login() {
@@ -29,8 +36,10 @@ export default function Login() {
   });
   const storage = new MMKV();
   const navigation = useNavigation();
+  const [isloading, setisLoading] = useState(false);
 
   const onSubmit = async (data: LoginSchemaForm) => {
+    setisLoading(true);
     try {
       const tokenRes = await getToken();
 
@@ -86,6 +95,8 @@ export default function Login() {
     } catch (error) {
       console.error(error);
       Alert.alert('Erro', 'Ocorreu um erro inesperado. Tente novamente.');
+    } finally {
+      setisLoading(false);
     }
   };
 
@@ -153,9 +164,20 @@ export default function Login() {
         />
       </View>
 
-      <TouchableOpacity onPress={handleSubmit(onSubmit)} style={styles.button}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
+      {isloading ? (
+        <ActivityIndicator
+          size={'large'}
+          color={'#fff'}
+          style={{ marginTop: 24 }}
+        />
+      ) : (
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit)}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
